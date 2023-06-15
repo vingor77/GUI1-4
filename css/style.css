@@ -1,0 +1,146 @@
+/*
+    Name: Vincent Gordon
+    Email: vincent_gordon@student.uml.edu
+    Copyright (c) 2023 by Vincent.
+    Date of file creation: May 28th 2023 at 12:32 pm
+    Last updated by Vincent June 14th 2023 at 11:01 am
+    This web page displays the restraints of inputs followed by a form with numeric inputs corresponding to the minimum and maximum values for a multiplication table.
+*/
+
+body {
+    background: rgb(63,94,251);
+    background: linear-gradient(180deg, #a941b0 0%, #f994ff 100%);
+    background-attachment: fixed;
+    margin: 0;
+}
+
+/*Center the content on the page. */
+#page {
+    display: block;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 8px double red;
+    max-width: 80%;
+    background-color: black;
+    color: #fff973;
+    overflow: auto;
+    padding: 10px;
+    height: calc(100vh - 25px);
+}
+
+ul {
+    display: inline-block;
+}
+
+li {
+    text-align: left;
+    padding-bottom: 10px;
+}
+
+/*Emphasize the limits imposed on the user for inputs.*/
+em {
+    font-weight: bold;
+    color: white;
+}
+
+/*Set up the form and table to be side by side. Sets the form to the left side with some basic margins to make it look nicer and add a border.*/
+form {
+    float: left;
+    border: 1px solid red;
+    width: 50%;
+    margin-bottom: 20px;
+    margin-top: 25px;
+    height: calc(50% - 37.5px);
+    min-width: 200px;
+    text-align: center;
+    background-color: black;
+    color: #fff973;
+}
+
+/*Makes this become a scrollable container set within a certain, designated area within the page.*/
+table {
+    margin-bottom: 20px;
+    margin-left: 5px;
+    display: block;
+    height: calc(50vh - 60px);
+    width: 99%;
+    overflow: auto;
+    text-align: center;
+    table-layout: fixed;
+    border-collapse: separate;
+}
+
+td, th {
+    border: 1px solid white;
+    width: 35px;
+}
+
+.side {
+    position: sticky;
+    left: 0;
+    background-color: #000000;
+}
+
+.top {
+    position: sticky;
+    top: 0;
+    background-color: #000000;
+}
+
+label {
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+input {
+    max-width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+button {
+    display: inline-block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/*
+    Styling the table to be a checkered style. The outer row and column are a different, uniform color.
+    I approached this by selecting the 2, 4, 6, 8, etc. tr then the 2, 4, 6, 8, etc. td and changing that color.
+    I do the same with the 3, 5, 7, 9, etc. tr and 3, 5, 7, 9, etc. td and changing that to the same color, giving the alternating effect.
+    Finally, I do the exact opposite to get the 2nd color.
+*/
+tr:nth-child(2n + 2) td:nth-child(2n + 2), 
+tr:nth-child(2n + 3) td:nth-child(2n + 3)
+{
+    background-color: #f994ff;
+    color: black;
+}
+
+tr:nth-child(2n + 2) td:nth-child(2n + 3), 
+tr:nth-child(2n + 3) td:nth-child(2n + 2)
+{
+    background-color: #a941b0;
+    border: 1px solid white;
+    color: black;
+}
+
+tr:nth-child(1), td:nth-child(1) {
+    background-color: #000000;
+    color: #fff973;
+    border: 1px solid white;
+}
+
+#test {
+    border: 1px solid orange;
+    width: 50%;
+    margin-bottom: 20px;
+    margin-left: 50%;
+    margin-top: 25px;
+    height: calc(50% - 37.5px);
+    min-width: 200px;
+    text-align: center;
+    background-color: black;
+    color: #fff973;
+}
