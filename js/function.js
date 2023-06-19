@@ -3,98 +3,68 @@
     Email: vincent_gordon@student.uml.edu
     Copyright (c) 2023 by Vincent.
     Date of file creation: May 28th 2023 at 12:32 pm
-    Last updated by Vincent June 14th 2023 at 11:01 am
-    This web page displays the restraints of inputs followed by a form with numeric inputs corresponding to the minimum and maximum values for a multiplication table.
+    Last updated by Vincent June 16th 2023 at 1:53 pm
 */
 
 $(function () {
     var maxNum = 50;
     var minNum = -50;
+    var table = document.getElementById("table");
+    var tabNum = 1;
+    $('#tabs').tabs();
 
     /*
         Create objects for each of the four inputs holding 3 things: A control variable (error),
         The message element from the HTML, and the input field element from the HTML.
-        I chose to use objects since I can change the inner contents while inside of a function call.
+        I chose to use objects since I can change the inner contents while inside of a function call easier.
+        The control variable, error, wants to be true for the checks further down.
     */
     var minRow = {
-        error: false,
+        error: true,
         msg: $('#minRowError'),
         value: $('#minRow')
     }
 
     var maxRow = {
-        error: false,
+        error: true,
         msg: $('#maxRowError'),
         value: $('#maxRow')
     }
 
     var minCol = {
-        error: false,
+        error: true,
         msg: $('#minColError'),
         value: $('#minCol')
     }
 
     var maxCol = {
-        error: false,
+        error: true,
         msg: $('#maxColError'),
         value: $('#maxCol')
     }
 
-    //Hide the error message as to not appear while no input has been entered.
-    minRow.msg.hide();
-    maxRow.msg.hide();
-    minCol.msg.hide();
-    maxCol.msg.hide();
+    //The mouse events corresponding to the sliders.
+    sliderEvents();
 
-    //Check for whenever a key is no longer being pressed. Run the validation function with the appropriate object passed in.
-    minRow.value.keyup(() => {
-        if (validateNum(minRow, maxRow)) {
-            validateMinMax(minRow, maxRow, "row");
-        }
-    })
-    maxRow.value.keyup(() => {
-        if (validateNum(maxRow, minRow)) {
-            validateMinMax(minRow, maxRow, "row");
-        }
-    })
-    minCol.value.keyup(() => {
-        if (validateNum(minCol, maxCol)) {
-            validateMinMax(minCol, maxCol, "col");
-        }
-    })
-    maxCol.value.keyup(() => {
-        if (validateNum(maxCol, minCol)) {
-            validateMinMax(minCol, maxCol, "col");
-        }
-    })
+    //The keyboard events corresponding to the input boxes.
+    keyEvents();
 
     function validateNum(selection, opposite) {
-        //Grab the value currently inside of minRow on the page when the key is no longer being pressed down.
-        //This then rounds any decimal points to the nearest whole number.
-        var value = parseFloat(selection.value.val()).toFixed();
+        var selectVal = parseFloat(selection.value.val()).toFixed();
 
-        //Huge numbers break the rounding, so if it does this is a fallback to make it always 1 greater than the max.
-        //This causes the checks underneath to operate on it and say it must be between -50 and 50.
-        if (selection.value.val().length > 8) {
-            value = maxNum + 1;
-        }
-        
         //Make sure values are within -50 and 50.
         if (selection.value.val().length == 0) {
-            selection.msg.show();
             selection.msg.text("Cannot be empty.");
             selection.error = false;
-            opposite.msg.hide();
             return false;
         }
-        else if(parseInt(value) > maxNum || parseInt(value) < minNum) {
-            selection.msg.show();
+        else if(parseInt(selectVal) > maxNum || parseInt(selectVal) < minNum) {
             selection.msg.text("The value must be between -50 and 50.");
             selection.error = false;
             return false;
         }
         else {
-            selection.msg.hide();
+            selection.msg.text("");
             selection.error = true;
             return true;
         }
@@ -102,24 +72,25 @@ $(function () {
 
     function validateMinMax(min, max, type) {
         //Check for empty string. If it is, then this won't work as parseFloat on an empty string causes NaN, not 0.
-        //With this in mind, the one with 0 length gets returned false.
+        //With this in mind, the one with 0 length gets returned false to end the function call early.
         if (min.value.val().length == 0 || max.value.val().length == 0) {
-            return false; //Returns false as to end the function call early. No need to continue.
+            return false;
         }
 
         var minVal = parseInt(parseFloat(min.value.val()).toFixed());
         var maxVal = parseInt(parseFloat(max.value.val()).toFixed());
 
+        //Checks for minimum being smaller than maximum row/column.
+        //The type variable tells whether it was a row or a column causing the error.
         if (minVal <= maxVal) {
             min.error = true;
             max.error = true;
-            min.msg.hide();
-            max.msg.hide();
+            min.msg.text("");
+            max.msg.text("");
         }
         else if (minVal > maxNum || minVal < minNum) {
-            min.error = true;
-            max.error = true;
-            max.msg.show();
+            min.error = false;
+            max.error = false;
             if (type == "row") {
                 max.msg.text("Must be larger than or equal to the minimum row.");
             }
@@ -128,9 +99,8 @@ $(function () {
             }
         }
         else if (maxVal > maxNum || maxVal < minNum) {
-            min.error = true;
-            max.error = true;
-            min.msg.show();
+            min.error = false;
+            max.error = false;
             if (type == "row") {
                 min.msg.text("Must be smaller than or equal to the minimum row.");
             }
@@ -140,10 +110,7 @@ $(function () {
         }
         else {
             min.error = false;
-            min.msg.show();
             max.error = false;
-            max.msg.show();
-
             if (type == "row") {
                 min.msg.text("Must be smaller than or equal to the minimum row.");
                 max.msg.text("Must be larger than or equal to the minimum row.");
@@ -155,36 +122,244 @@ $(function () {
         }
     }
 
-    button = document.getElementById("createTable");
+    function keyEvents () {
+        //Check for whenever a key is no longer being pressed. Run the validation function with the appropriate objects passed in.
+        minRow.value.keyup(() => {
+            if (validateNum(minRow, maxRow) && validateNum(maxRow, minRow)) {
+                validateMinMax(minRow, maxRow, "row");
+            }
+            $('#minRowSlider').slider("value", minRow.value.val());
+            updateTable();
+        })
 
-    button.addEventListener("click", () => {
+        maxRow.value.keyup(() => {
+            if (validateNum(maxRow, minRow) && validateNum(minRow, maxRow)) {
+                validateMinMax(minRow, maxRow, "row");
+            }
+            $('#maxRowSlider').slider("value", maxRow.value.val());
+            updateTable();
+        })
+
+        minCol.value.keyup(() => {
+            if (validateNum(minCol, maxCol) && validateNum(maxCol, minCol)) {
+                validateMinMax(minCol, maxCol, "col");
+            }
+            $('#minColSlider').slider("value", minCol.value.val());
+            updateTable();
+        })
+
+        maxCol.value.keyup(() => {
+            if (validateNum(maxCol, minCol) && validateNum(minCol, maxCol)) {
+                validateMinMax(minCol, maxCol, "col");
+            }
+            $('#maxColSlider').slider("value", maxCol.value.val());
+            updateTable();
+        })
+    }
+
+    function sliderEvents() {
+        //This makes a slider with a min of -50 and a max of 50 with the functions on creation and what to do when sliding.
+        //Both, in this case, just updates the value inside of the input box and that's it. I repeat this for all 4 inputs.
+        $('#minRowSlider').slider({
+            min: minNum,
+            max: maxNum,
+            create: function () {
+                minRow.value.val($(this).slider("value"));
+            },
+            slide: function () {
+                minRow.value.val($(this).slider("value"));
+                if (validateNum(minRow, maxRow) && validateNum(maxRow, minRow)) {
+                    validateMinMax(minRow, maxRow, "row");
+                }
+                updateTable();
+            }
+        });
+        //This is so if a larger number is put in, when the slider is clicked on the number in the input box snaps to the slider value.
+        $('#minRowSlider').mousedown(() => {
+            minRow.value.val($('#minRowSlider').slider("value"));
+            if (validateNum(minRow, maxRow) && validateNum(maxRow, minRow)) {
+                validateMinMax(minRow, maxRow, "row");
+            }
+            updateTable();
+        })
+
+
+        $('#maxRowSlider').slider({
+            min: minNum,
+            max: maxNum,
+            create: function () {
+                maxRow.value.val($(this).slider("value"));
+            },
+            slide: function () {
+                maxRow.value.val($(this).slider("value"));
+                if (validateNum(minRow, maxRow) && validateNum(maxRow, minRow)) {
+                    validateMinMax(minRow, maxRow, "row");
+                }
+                updateTable();
+            }
+        });
+        $('#maxRowSlider').mousedown(() => {
+            maxRow.value.val($('#maxRowSlider').slider("value"));
+            if (validateNum(minRow, maxRow) && validateNum(maxRow, minRow)) {
+                validateMinMax(minRow, maxRow, "row");
+            }
+            updateTable();
+        })
+
+
+        $('#minColSlider').slider({
+            min: minNum,
+            max: maxNum,
+            create: function () {
+                minCol.value.val($(this).slider("value"));
+            },
+            slide: function () {
+                minCol.value.val($(this).slider("value"));
+                if (validateNum(minCol, maxCol) && validateNum(maxCol, minCol)) {
+                    validateMinMax(minCol, maxCol, "col");
+                }
+                updateTable();
+            }
+        });
+        $('#minColSlider').mousedown(() => {
+            minCol.value.val($('#minColSlider').slider("value"));
+            if (validateNum(minCol, maxCol) && validateNum(maxCol, minCol)) {
+                validateMinMax(minCol, maxCol, "col");
+            }
+            updateTable();
+        })
+
+
+        $('#maxColSlider').slider({
+            min: minNum,
+            max: maxNum,
+            create: function () {
+                maxCol.value.val($(this).slider("value"));
+            },
+            slide: function () {
+                maxCol.value.val($(this).slider("value"));
+                if (validateNum(minCol, maxCol) && validateNum(maxCol, minCol)) {
+                    validateMinMax(minCol, maxCol, "col");
+                }
+                updateTable();
+            },
+        });
+        $('#maxColSlider').mousedown(() => {
+            maxCol.value.val($('#maxColSlider').slider("value"));
+            if (validateNum(minCol, maxCol) && validateNum(maxCol, minCol)) {
+                validateMinMax(minCol, maxCol, "col");
+            }
+            updateTable();
+        })
+    }
+
+    function updateTable() {
+        //The if statement checks if all jQuery checks have passed. If any haven't, do nothing.
         if (minRow.error == true && maxRow.error == true && minCol.error == true && maxCol.error == true) {
             var minRowVal = parseInt(parseFloat(minRow.value.val()).toFixed());
             var maxRowVal = parseInt(parseFloat(maxRow.value.val()).toFixed());
             var minColVal = parseInt(parseFloat(minCol.value.val()).toFixed());
             var maxColVal = parseInt(parseFloat(maxCol.value.val()).toFixed());
-            var table = document.getElementById("table");
     
             table.innerText = ""; //Get rid of the previous table, then put the new one in.
-            reset();
 
             table.appendChild(populateTable(null, minRowVal, maxRowVal, minColVal, maxColVal));
+            return table;
+        }
+    }
+
+    selectedTabs = [];
+    saveTable = document.getElementById("saveTable");
+
+    saveTable.addEventListener("click", () => {
+        if (minRow.error == true && maxRow.error == true && minCol.error == true && maxCol.error == true) {
+            //Clone the table made with the sliders and set the attributes.
+            //If the cloning and class changes don't happen, styling in css would be more difficult.
+            //Also, the table would just move from where it should be to the tab and break.
+            var tabTable = table.cloneNode(true);
+
+            tabTable.setAttribute("class", "tabTable");
+            tabTable.children[0].setAttribute("class", "tabTableChild");
+
+            //Make a list, anchor, div, and span element.
+            //The list is to represent the tab container. 
+            //The anchor is the link to display the div. The div contains the table saved along with a checkbox for marking deletion. The span allows closing of that tab individually.
+            li = document.createElement("li");
+            li.setAttribute("id", "litab" + (tabNum - 1));
+
+            a = document.createElement("a");
+            a.setAttribute("href", ("#tab" + (tabNum - 1)));
+            a.appendChild(document.createTextNode(minRow.value.val() + " to " + maxRow.value.val() + " by " + minCol.value.val() + " to " + maxCol.value.val()));
+
+            span = document.createElement("span");
+            span.setAttribute("class", "ui-icon ui-icon-circle-close ui-closable-tab");
+
+            li.appendChild(a);
+            li.appendChild(span);
+            document.getElementById('tabList').appendChild(li);
+
+            div = document.createElement("div");
+            div.setAttribute("id", ("tab" + (tabNum - 1)));
+            div.setAttribute("class", "tab");
+            div.appendChild(tabTable);
+
+            checkBox = document.createElement("input");
+            checkBox.setAttribute("type", "checkbox");
+            checkBox.setAttribute("id", "tab" + (tabNum - 1));
+            selectedTabs.push(checkBox);
+
+            label = document.createElement("label");
+            label.setAttribute("for", checkBox.id);
+            label.innerText = "Mark for Deletion";
+
+            div.appendChild(checkBox);
+            div.appendChild(label);
+
+            document.getElementById('tabs').insertBefore(div, document.getElementById('manageTabs'));
+
+            //Remove individual tab.
+            span.addEventListener("click", (event) => {
+                var tabContainerDiv = $("#tabs").attr("id");
+                var id = event.target.closest("li").getAttribute("aria-controls");
+
+                event.target.closest("li").remove();
+                for (var i = 0; i < selectedTabs.length; i++) {
+                    if(selectedTabs[i].id == id) {
+                        selectedTabs.splice(i, 1);
+                    }
+                }
+                $("#" + id).remove();
+                $("#" + tabContainerDiv).tabs("refresh");
+            })
+
+            //Refresh the tabs so that the new one shows up correctly. Then, set that new tab to the active tab.
+            $("#tabs").tabs("refresh");
+            $('#tabs').tabs({
+                active: (tabNum - 1)
+            })
+            tabNum++;
+            tabTable = ""; //Reset the table to empty so it is ready for the next saved table.
+            reset();
         }
     })
 
-    function reset() {
-        //Resets the values in the input fields and changes the errors.
-        //This happens so that the button won't do anything when the inputs are empty, but before any keyup events occur.
-        minRow.value.val("");
-        maxRow.value.val("");
-        minCol.value.val("");
-        maxCol.value.val("");
+    var deleteTabs = document.getElementById("deleteTab");
 
-        minRow.error = false;
-        maxRow.error = false;
-        minCol.error = false;
-        maxCol.error = false;
-    }
+    //Delete the selected tabs. I created an array to mark off all checkboxes ready to be removed.
+    //I then check here if it is checked, delete the elements required, and remove the checkbox from the array.
+    deleteTabs.addEventListener("click", () => {
+        //I have to map the original array to a new one since if I removed an element while running on its length, the loop would break/logic would be wrong.
+        var leftOverTabs = selectedTabs.map((x) => x);
+        for (var i = 0; i < selectedTabs.length; i++) {
+            if(selectedTabs[i].checked == true) {
+                var id = selectedTabs[i].id;
+                document.getElementById("li" + id).remove();
+                document.getElementById(id).remove();
+                leftOverTabs = leftOverTabs.filter(function (e) {return e.id !== id});
+            }
+        }
+        selectedTabs = leftOverTabs;
+    })
 
     function populateTable(table, minRow, maxRow, minCol, maxCol) {
         var negCount = 0;
@@ -258,6 +433,21 @@ $(function () {
             table.appendChild(row);
         }
         return table;
+    }
+
+    function reset() {
+        //Resets the values in the input fields and sliders. This is so it sets at the center of 0 everytime for ease of use.
+        minRow.value.val(0);
+        maxRow.value.val(0);
+        minCol.value.val(0);
+        maxCol.value.val(0);
+
+        $('#minRowSlider').slider("value", 0);
+        $('#maxRowSlider').slider("value", 0);
+        $('#minColSlider').slider("value", 0);
+        $('#maxColSlider').slider("value", 0);
+
+        updateTable();
     }
 })
 
