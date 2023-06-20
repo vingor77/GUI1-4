@@ -18,7 +18,7 @@ $(function () {
         Create objects for each of the four inputs holding 3 things: A control variable (error),
         The message element from the HTML, and the input field element from the HTML.
         I chose to use objects since I can change the inner contents while inside of a function call easier.
-        The control variable, error, wants to be true for the checks further down. 
+        The control variable, error, wants to be true for the checks further down.
     */
     var minRow = {
         error: true,
