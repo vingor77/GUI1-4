@@ -24,38 +24,46 @@
     <body>
         <div id="page">
             <!--Form to gather the minimums and maximums. The onsubmit is to ensure the page does not refresh, paired with the javascript.-->
-            <form method="post" id="form" onsubmit="return formSubmit();">
-                <label for="minRow">Minimum row value</label>
-                <input type="number" step="any" class="form-control" id="minRow" value="0" onKeyPress="if(this.value.length==4) return false;">
-                <div id="minRowSlider" value="0" class="slider"></div>
-                <p id="minRowError" class="error"></p>
+            <div class="row">
+                <div class="col-sm-12 col-md-3 col-lg-3" id="formDiv">
+                    <form method="post" id="form" onsubmit="return formSubmit();">
+                        <label for="minRow">Minimum row value</label>
+                        <input type="number" step="any" class="form-control" id="minRow" value="0" onKeyPress="if(this.value.length==4) return false;">
+                        <div id="minRowSlider" value="0" class="slider"></div>
+                        <p id="minRowError" class="error"></p>
+                    
+                        <label for="maxRow">Maximum row value</label>
+                        <input type="number" step="any" class="form-control" id="maxRow" value="0" onKeyPress="if(this.value.length==4) return false;">
+                        <div id="maxRowSlider" value="0" class="slider"></div>
+                        <p id="maxRowError" class="error"></p>
+                    
+                        <label for="minCol">Minimum column value</label>
+                        <input type="number" step="any" class="form-control" id="minCol" value="0" onKeyPress="if(this.value.length==4) return false;">
+                        <div id="minColSlider" value="0" class="slider"></div>
+                        <p id="minColError" class="error"></p>
+                    
+                        <label for="maxCol">Maximum column value</label>
+                        <input type="number" step="any" class="form-control" id="maxCol" value="0" onKeyPress="if(this.value.length==4) return false;">
+                        <div id="maxColSlider" value="0" class="slider"></div>
+                        <p id="maxColError" class="error"></p>
 
-                <label for="maxRow">Maximum row value</label>
-                <input type="number" step="any" class="form-control" id="maxRow" value="0" onKeyPress="if(this.value.length==4) return false;">
-                <div id="maxRowSlider" value="0" class="slider"></div>
-                <p id="maxRowError" class="error"></p>
-
-                <label for="minCol">Minimum column value</label>
-                <input type="number" step="any" class="form-control" id="minCol" value="0" onKeyPress="if(this.value.length==4) return false;">
-                <div id="minColSlider" value="0" class="slider"></div>
-                <p id="minColError" class="error"></p>
-
-                <label for="maxCol">Maximum column value</label>
-                <input type="number" step="any" class="form-control" id="maxCol" value="0" onKeyPress="if(this.value.length==4) return false;">
-                <div id="maxColSlider" value="0" class="slider"></div>
-                <p id="maxColError" class="error"></p>
-            </form>
+                        <div id="manageTabs">
+                            <button type="button" class="btn btn-success" id="saveTable">Save table</button>
+                            <button type="button" class="btn btn-danger" id="deleteTab">Delete selected</button>
+                        </div>
+                    </form>
+                </div>
+    
+                <!--This is the div that the table will be populated inside of, this the id of table.-->
+                <div class="col-sm-12 col-md-9 col-lg-9" id="tableDiv">
+                    <div id="table"></div>
+                </div>
+            </div>
 
             <!--The div holding the tabs along with the subsequent deletion of tabs.-->
             <div id="tabs">
                 <ul id="tabList"></ul>
-                <div id="manageTabs">
-                    <button type="button" class="btn btn-success" id="saveTable">Save table to tabs</button>
-                    <button type="button" class="btn btn-danger" id="deleteTab">Delete selected from tabs</button>
-                </div>
             </div>
-            <!--This is the div that the table will be populated inside of, this the id of table.-->
-            <div id="table"></div>
         </div>
 
         <script src="js/function.js"></script>

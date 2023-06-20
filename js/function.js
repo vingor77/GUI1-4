@@ -12,6 +12,7 @@ $(function () {
     var table = document.getElementById("table");
     var tabNum = 1;
     $('#tabs').tabs();
+    $("#tabs").hide();
 
     /*
         Create objects for each of the four inputs holding 3 things: A control variable (error),
@@ -301,7 +302,6 @@ $(function () {
             div = document.createElement("div");
             div.setAttribute("id", ("tab" + (tabNum - 1)));
             div.setAttribute("class", "tab");
-            div.appendChild(tabTable);
 
             checkBox = document.createElement("input");
             checkBox.setAttribute("type", "checkbox");
@@ -314,12 +314,12 @@ $(function () {
 
             div.appendChild(checkBox);
             div.appendChild(label);
+            div.appendChild(tabTable);
 
-            document.getElementById('tabs').insertBefore(div, document.getElementById('manageTabs'));
+            document.getElementById('tabs').appendChild(div);
 
             //Remove individual tab.
             span.addEventListener("click", (event) => {
-                var tabContainerDiv = $("#tabs").attr("id");
                 var id = event.target.closest("li").getAttribute("aria-controls");
 
                 event.target.closest("li").remove();
@@ -329,7 +329,13 @@ $(function () {
                     }
                 }
                 $("#" + id).remove();
-                $("#" + tabContainerDiv).tabs("refresh");
+                $("#tabs").tabs("refresh");
+
+                //If there are no tabs left, hide the tabs element.
+                var count = $("#tabs").find(".ui-closable-tab").length;
+                if (count < 1) {
+                    $("#tabs").hide();
+                }
             })
 
             //Refresh the tabs so that the new one shows up correctly. Then, set that new tab to the active tab.
@@ -340,6 +346,7 @@ $(function () {
             tabNum++;
             tabTable = ""; //Reset the table to empty so it is ready for the next saved table.
             reset();
+            $("#tabs").show();
         }
     })
 
@@ -359,6 +366,10 @@ $(function () {
             }
         }
         selectedTabs = leftOverTabs;
+        var count = $("#tabs").find(".ui-closable-tab").length;
+        if (count < 1) {
+            $("#tabs").hide();
+        }
     })
 
     function populateTable(table, minRow, maxRow, minCol, maxCol) {

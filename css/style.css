@@ -11,6 +11,7 @@ body {
     background: linear-gradient(180deg, #a941b0 0%, #f994ff 100%);
     background-attachment: fixed;
     margin: 0;
+    padding: 0;
 }
 
 /*Center the content on the page. */
@@ -21,11 +22,13 @@ body {
     margin-right: auto;
     border: 8px double red;
     max-width: 80%;
-    background-color: black;
     color: #fff973;
     overflow: auto;
-    padding: 10px;
-    height: calc(100vh - 25px);
+    padding-right: 25px;
+    padding-left: 25px;
+    padding-bottom: 0;
+    padding-top: 10px;
+    background-color: black;
 }
 
 ul {
@@ -37,37 +40,46 @@ li {
     padding-bottom: 10px;
 }
 
-/*Emphasize the limits imposed on the user for inputs.*/
-em {
-    font-weight: bold;
-    color: white;
-}
-
-/*Set up the form and table to be side by side. Sets the form to the left side with some basic margins to make it look nicer and add a border.*/
+/*These center the content inside of the form while giving a maximum width to each component.*/
 form {
-    float: left;
-    border: 1px solid red;
-    width: 25%;
-    margin-bottom: 20px;
-    margin-top: 25px;
-    height: calc(50% - 37.5px);
-    min-width: 200px;
+    padding: 10px;
     text-align: center;
-    background-color: black;
-    color: #fff973;
 }
 
-/*Makes this become a scrollable container set within a certain, designated area within the page.*/
+.form-control {
+    width: 50%;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.slider {
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+}
+
+.error {
+    height: 50px;
+}
+
+/*
+    Makes this become a scrollable container set within a certain, designated area within the page.
+    The rest is coloring of the table.
+*/
 table {
-    margin-bottom: 20px;
-    margin-left: 5px;
     display: block;
-    height: calc(50vh - 60px);
-    width: 99%;
     overflow: auto;
     text-align: center;
     table-layout: fixed;
     border-collapse: separate;
+    max-height: 680px;
+    width: 100%;
+}
+
+#tableDiv {
+    border-left: 1px solid white;
 }
 
 td, th {
@@ -75,6 +87,7 @@ td, th {
     width: 35px;
 }
 
+/*These are the left and top borders for the table. This keeps them fixed while scrolling in the container.*/
 .side {
     position: sticky;
     left: 0;
@@ -85,18 +98,6 @@ td, th {
     position: sticky;
     top: 0;
     background-color: #000000;
-}
-
-input {
-    max-width: 50%;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-button {
-    display: inline-block;
-    margin-top: 10px;
-    margin-bottom: 10px;
 }
 
 /*
@@ -126,82 +127,74 @@ tr:nth-child(1), td:nth-child(1) {
     border: 1px solid white;
 }
 
-.slider {
-    width: 50%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 10px;
-}
-
-.error {
-    height: 24px; /*TODO: Change the height to a percentage.*/
-}
-
-/*TODO: Style the tabs and buttons. Then style the rest of the page.*/
 #tabs {
-    border: 1px solid orange;
-    width: 75%;
-    height: 100%;
-    margin-bottom: 20px;
-    margin-left: 25%;
-    margin-top: 25px;
-    height: calc(50% - 37.5px);
-    min-width: 200px;
-    background-color: black;
+    height: 525px;
+    width: 100%;
+    background: black;
+    border: 0;
+    margin: 0;
+    border-top: 1px solid white;
+    border-width: calc(100% + 100px);
+}
+
+#tabs ul {
+    background: black;
+    border: 0;
+}
+
+#tabs li {
+    background: black;
+    border-bottom: 1px solid black; /*Adding a border. The color does not matter since it changes right under it.*/
+    border-color: #fff973;
+}
+
+#tabs li a {
     color: #fff973;
-    display: block;
 }
 
-#showTabs {
-    border: 1px solid green;
-    width: 100%;
-    height: 90%;
+#tabs .ui-state-active {
+    background: #fff973;
 }
 
-#manageTabs {
-    border: 1px solid turquoise;
-    width: 100%;
-    height: 10%;
+#tabs .ui-state-active a {
+    color: black;
 }
 
-#saveTable {
-    margin-left: 20%;
+#tabs .side, #tabs label {
+    color: #fff973;
 }
 
-#deleteTab {
-    margin-left: 20%;
-}
-
-.tab {
-    max-height: 83.5%;
-    height: 83.5%;
-    padding: 0;
-}
-
-.tabTable {
-    height: 100%;
-    width: 89%;
-    display: inline-block;
-}
-
-.tabTableChild {
-    height: 100%;
-}
-
-/*
-#tabList > li {
-    width: 100px;
-    overflow: hidden;
-}
-*/
-
-a {
-    display: inline-block;
-    padding: 0;
-    font-size: 60%;
-    text-align: left;
+.tab, .tabTable, .tabTableChild {
+    height: 400px;
+    max-height: 400px;
+    background-color: black;
 }
 
 .ui-icon-circle-close  {
     cursor: pointer;
+}
+
+#manageTabs {
+    position: relative;
+}
+
+#saveTable {
+    width: 100px;
+    background-color: #f994ff;
+    color: black;
+}
+
+#deleteTab {
+    width: 134px;
+    background-color: #a941b0;
+    color: black;
+}
+
+#saveTable, #deleteTab {
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.col-sm-12 {
+    margin: 0;
 }
