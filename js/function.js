@@ -125,6 +125,8 @@ $(function () {
 
     function keyEvents () {
         //Check for whenever a key is no longer being pressed. Run the validation function with the appropriate objects passed in.
+        //It has to check both the min and max rows here to display the correct messages. If only 1 was called, there is a chance
+        //that the one being worked on works out so it then goes into validateMinMax and deletes the error message from before on the other one. This was a bug.
         minRow.value.keyup(() => {
             if (validateNum(minRow, maxRow) && validateNum(maxRow, minRow)) {
                 validateMinMax(minRow, maxRow, "row");
@@ -292,6 +294,7 @@ $(function () {
             a.setAttribute("href", ("#tab" + (tabNum - 1)));
             a.appendChild(document.createTextNode(minRow.value.val() + " to " + maxRow.value.val() + " by " + minCol.value.val() + " to " + maxCol.value.val()));
 
+            //Single delete spans.
             span = document.createElement("span");
             span.setAttribute("class", "ui-icon ui-icon-circle-close ui-closable-tab");
 
@@ -303,6 +306,7 @@ $(function () {
             div.setAttribute("id", ("tab" + (tabNum - 1)));
             div.setAttribute("class", "tab");
 
+            //Mass delete checkboxes.
             checkBox = document.createElement("input");
             checkBox.setAttribute("type", "checkbox");
             checkBox.setAttribute("id", "tab" + (tabNum - 1));
@@ -338,7 +342,7 @@ $(function () {
                 }
             })
 
-            //Refresh the tabs so that the new one shows up correctly. Then, set that new tab to the active tab.
+            //Refresh the tabs so that the new one shows up correctly. Then, set that new tab to the active tab. This applies to creation of tabs only.
             $("#tabs").tabs("refresh");
             $('#tabs').tabs({
                 active: (tabNum - 1)
@@ -351,7 +355,6 @@ $(function () {
     })
 
     var deleteTabs = document.getElementById("deleteTab");
-
     //Delete the selected tabs. I created an array to mark off all checkboxes ready to be removed.
     //I then check here if it is checked, delete the elements required, and remove the checkbox from the array.
     deleteTabs.addEventListener("click", () => {
