@@ -463,6 +463,8 @@ $(function () {
 
         updateTable();
     }
+
+    reset();
 })
 
 function formSubmit() {return false;} //Prevents page refresh.
