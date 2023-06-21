@@ -18,7 +18,7 @@ $(function () {
         Create objects for each of the four inputs holding 3 things: A control variable (error),
         The message element from the HTML, and the input field element from the HTML.
         I chose to use objects since I can change the inner contents while inside of a function call easier.
-        The control variable, error, wants to be true for the checks further down. 
+        The control variable, error, wants to be true for the checks further down.
     */
     var minRow = {
         error: true,
@@ -127,7 +127,16 @@ $(function () {
         //Check for whenever a key is no longer being pressed. Run the validation function with the appropriate objects passed in.
         //It has to check both the min and max rows here to display the correct messages. If only 1 was called, there is a chance
         //that the one being worked on works out so it then goes into validateMinMax and deletes the error message from before on the other one. This was a bug.
+        //The click functions are here to ensure that when clicking the arrows(since type num in html has arrows), it still checks for validation.
         minRow.value.keyup(() => {
+            if (validateNum(minRow, maxRow) && validateNum(maxRow, minRow)) {
+                validateMinMax(minRow, maxRow, "row");
+            }
+            $('#minRowSlider').slider("value", minRow.value.val());
+            updateTable();
+        })
+
+        minRow.value.click(() => {
             if (validateNum(minRow, maxRow) && validateNum(maxRow, minRow)) {
                 validateMinMax(minRow, maxRow, "row");
             }
@@ -143,6 +152,14 @@ $(function () {
             updateTable();
         })
 
+        maxRow.value.click(() => {
+            if (validateNum(maxRow, minRow) && validateNum(minRow, maxRow)) {
+                validateMinMax(minRow, maxRow, "row");
+            }
+            $('#maxRowSlider').slider("value", maxRow.value.val());
+            updateTable();
+        })
+
         minCol.value.keyup(() => {
             if (validateNum(minCol, maxCol) && validateNum(maxCol, minCol)) {
                 validateMinMax(minCol, maxCol, "col");
@@ -151,7 +168,23 @@ $(function () {
             updateTable();
         })
 
+        minCol.value.click(() => {
+            if (validateNum(minCol, maxCol) && validateNum(maxCol, minCol)) {
+                validateMinMax(minCol, maxCol, "col");
+            }
+            $('#minColSlider').slider("value", minCol.value.val());
+            updateTable();
+        })
+
         maxCol.value.keyup(() => {
+            if (validateNum(maxCol, minCol) && validateNum(minCol, maxCol)) {
+                validateMinMax(minCol, maxCol, "col");
+            }
+            $('#maxColSlider').slider("value", maxCol.value.val());
+            updateTable();
+        })
+
+        maxCol.value.click(() => {
             if (validateNum(maxCol, minCol) && validateNum(minCol, maxCol)) {
                 validateMinMax(minCol, maxCol, "col");
             }
